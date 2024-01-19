@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "@esbuild-kit/cjs-loader": "^2.4.4",
-    "g": "^2.0.1"
-  }
-}
