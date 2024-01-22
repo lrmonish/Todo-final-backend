@@ -1,6 +1,9 @@
 const UserModel = require('./user-model');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config(); 
+
+const secretString = process.env.SECRET_STRING; 
 
 const AuthController = {
 
@@ -55,7 +58,15 @@ signup :  (req, res) => {
             })
         }
 
-        const token = jwt.sign({username: userFound.username, userId: userFound._id}, "secret_string", {expiresIn:"1h"})
+        const token = jwt.sign({username: userFound.username, userId: userFound._id},secretString, {expiresIn:"1h"})
+        res.setHeader('Authorization', `Bearer ${token}`);
+
+        // const tokens = window.location.headers.authorization.split(' ')[1];
+        // const encryptedToken = SJCL.encrypt('secret_string', tokens);
+        // localStorage.setItem('my-app-token', encryptedToken);
+
+       
+
         return res.status(200).json({
             token: token,
             expiresIn: 3600

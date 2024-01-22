@@ -1,9 +1,11 @@
 const Todo = require('./todo-schema');
-
+const verifyToken = require('./todo-verifytoken'); 
 
 const TodosController = {
   createPost: async function (req, res) {
     try {
+      await verifyToken(req,res);
+
       const newTodo = new Todo(req.body);
       const savedTodo = await newTodo.save();
       res.status(201).json(savedTodo);
@@ -13,9 +15,10 @@ const TodosController = {
     }
   },
 
-  getPost: async function(req, res)
-  {
+  getPost: async function(req, res) {
     try {
+      await verifyToken(req,res); 
+
       const todos = await Todo.find();
       res.json(todos);
     } catch (err) {
@@ -24,9 +27,10 @@ const TodosController = {
     }
   },
 
-  getByidPost :async function (req, res) 
-  {
+  getByidPost :async function (req, res) {
     try {
+      await verifyToken(req,res); 
+
       const todo = await Todo.findById(req.params.id);
       if (!todo) return res.status(404).json({ message: "Todo not found" });
       res.json(todo);
@@ -36,9 +40,10 @@ const TodosController = {
     }
   },
 
-  putPost: async (req, res) => 
-  {
+  putPost: async (req, res) => {
     try {
+      await verifyToken(req,res); 
+
       const updatedDescription = req.body.description; 
       const id = req.params.id;
   
@@ -51,9 +56,10 @@ const TodosController = {
     }
   },
 
-  deletePost: async (req, res) => 
-  {
+  deletePost: async (req, res) => {
     try {
+      await verifyToken(req,res); 
+
       const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
       if (!deletedTodo) return res.status(404).json({ message: "Todo not found" });
       res.json({ message: "Todo deleted successfully" });
@@ -62,8 +68,6 @@ const TodosController = {
       res.status(500).json({ message: "Error deleting todo" });
     }
   }
-
-
 };
 
 module.exports = TodosController;
