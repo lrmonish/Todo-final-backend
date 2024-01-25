@@ -23,7 +23,7 @@ const AuthController = {
         } catch (err) {
           if (err.name === 'ValidationError') {
             res.status(300).json({
-              error: 'Username already exists',
+              message: 'Username already exists',
               details: err.errors,
             });
           } else {
