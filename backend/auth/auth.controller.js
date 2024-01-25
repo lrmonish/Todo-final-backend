@@ -8,77 +8,139 @@ const secretString = process.env.SECRET_STRING;
 const AuthController = {
 
 
-signup :  (req, res) => {
-    bcrypt.hash(req.body.password, 10)
-      .then(hash => {
-        const userModel = new UserModel({
-          username: req.body.username,
-          password: hash
-        });
-  
-        return userModel.save();
-      })
-      .then(result => {
-        res.status(201).json({
-          message: 'User created',
-          result: result
-        });
-      })
-      .catch(err => {
-  
-          if (err.name === 'ValidationError') {
-          res.status(300).json({
-            error: 'Username already exists',
-            details: err.errors
+  signup: async (req, res) => {
+        try {
+          const userModel = new UserModel({
+            username: req.body.username,
+            password: req.body.password, 
           });
-        } else {
-          res.status(500).json({ error: 'Internal server error' });
+    
+          const savedUser = await userModel.save();
+          res.status(201).json({
+            message: 'User created',
+            result: savedUser,
+          });
+        } catch (err) {
+          if (err.name === 'ValidationError') {
+            res.status(300).json({
+              error: 'Username already exists',
+              details: err.errors,
+            });
+          } else {
+            res.status(500).json({ error: 'Internal server error' });
+          }
         }
-      });
-  },
+      },
 
-  login: (req,res) => {
+login: async (req,res) => {
 
-    let userFound;
+  try
+  {
+   const user = await UserModel.findOne({ username: req.body.username });
+   
+   if (!user) {
+             return res.status(401).json({ message: 'User not found' });
+           }
+          
+           const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+          
 
-    UserModel.findOne({username: req.body.username})
-        .then(user => {
-            if(!user){
-                return res.status(401).json({
-                    message: 'User not found'
-                })
-            }
-            userFound = user
-            return bcrypt.compare(req.body.password, user.password)
-        })
-    .then(result => {
-        if(!result){
-            return res.status(401).json({
-                message: 'Password is incorrect'
-            })
-        }
+           if(!isPasswordValid)
+           {
+            
+             return res.status(401).json({ message: 'Password is incorrect' });
+             
+           }
 
-        const token = jwt.sign({username: userFound.username, userId: userFound._id},secretString, {expiresIn:"1h"})
-        res.setHeader('Authorization', `Bearer ${token}`);
-
-        // const tokens = window.location.headers.authorization.split(' ')[1];
-        // const encryptedToken = SJCL.encrypt('secret_string', tokens);
-        // localStorage.setItem('my-app-token', encryptedToken);
-
-       
-
-        return res.status(200).json({
-            token: token,
-            expiresIn: 3600
-        })
-    })
-    .catch(err => {
-        return res.status(401).json({
-            message: 'Error with authentication'
-        })
-    })
+           const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
+           
+           res.setHeader('Authorization', `Bearer ${token}`);
+           res.status(200).json({ token: token, expiresIn: 3600 });
+  }
+  catch (err) {
+         return res.status(401).json({ message: 'Error with authentication' });
+       }
+      
 }
  
 }
 
 module.exports= AuthController;
+
+
+
+
+
+// login: async (req,res) => {
+
+//   try
+//   {
+//    let userFound;
+//    const user = await UserModel.findOne({ username: req.body.username });
+//    if (!user) {
+//              return res.status(401).json({ message: 'User not found' });
+//            }
+//            userFound = user;
+//            const isPasswordValid = await user.comparePassword(req.body.password, user.password);
+          
+//            if(!isPasswordValid)
+//            {
+//              return res.status(401).json({ message: 'Password is incorrect' });
+//            }
+
+//            const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
+//            res.setHeader('Authorization', `Bearer ${token}`);
+//            res.status(200).json({ token: token, expiresIn: 3600 });
+//   }
+//   catch (err) {
+//          return res.status(401).json({ message: 'Error with authentication' });
+//        }
+      
+// }
+
+
+
+
+
+//old
+
+
+
+// login: (req,res) => {
+
+//   let userFound;
+
+//   UserModel.findOne({username: req.body.username})
+//       .then(user => {
+//           if(!user)
+//           {
+//               return res.status(401).json({
+//                   message: 'User not found'
+//               })
+//           }
+
+//           userFound = user
+//           return bcrypt.compare(req.body.password, user.password)
+//       })
+
+//   .then(result => {
+//       if(!result)
+//       {
+//           return res.status(401).json({
+//               message: 'Password is incorrect'
+//           })
+//       }
+
+//       const token = jwt.sign({username: userFound.username, userId: userFound._id},secretString, {expiresIn:"1h"})
+//       res.setHeader('Authorization', `Bearer ${token}`);
+//       return res.status(200).json({
+//           token: token,
+//           expiresIn: 3600
+//       })
+//   })
+//   .catch(err => {
+//       return res.status(401).json({
+//           message: 'Error with authentication'
+//       })
+//   })
+// }
