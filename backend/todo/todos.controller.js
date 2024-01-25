@@ -5,7 +5,6 @@ const TodosController = {
   createPost: async function (req, res) {
     try {
       await verifyToken(req,res);
-
       const newTodo = new Todo(req.body);
       const savedTodo = await newTodo.save();
       res.status(201).json(savedTodo);

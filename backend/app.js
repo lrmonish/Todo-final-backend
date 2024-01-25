@@ -2,8 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require("cors");
-const TodosController = require('./todo/todos.controller');
-const AuthController = require('./auth/auth.controller');
+const authroute = require('./routes/authroutes');
+const todoroute = require('./routes/todoroutes');
 
 const app = express();
 exports.app = app;
@@ -25,14 +25,6 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 })
-
-app.post("/api/todos/CreatePost", TodosController.createPost);
-app.get("/api/todos/GetPost", TodosController.getPost);
-app.get("/api/todos/GetPost/:id", TodosController.getByidPost);
-app.put("/api/todos/EditPost/:id", TodosController.putPost);
-app.delete("/api/todos/DeletePost/:id", TodosController.deletePost);
-
-app.post('/sign-up', AuthController.signup);
-app.post('/login',AuthController.login)
-
+app.use(todoroute);
+app.use(authroute);
 module.exports = app;
