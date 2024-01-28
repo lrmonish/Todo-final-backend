@@ -43,7 +43,6 @@ login: async (req,res) => {
            }
           
            const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
-          
 
            if(!isPasswordValid)
            {
@@ -66,81 +65,3 @@ login: async (req,res) => {
 }
 
 module.exports= AuthController;
-
-
-
-
-
-// login: async (req,res) => {
-
-//   try
-//   {
-//    let userFound;
-//    const user = await UserModel.findOne({ username: req.body.username });
-//    if (!user) {
-//              return res.status(401).json({ message: 'User not found' });
-//            }
-//            userFound = user;
-//            const isPasswordValid = await user.comparePassword(req.body.password, user.password);
-          
-//            if(!isPasswordValid)
-//            {
-//              return res.status(401).json({ message: 'Password is incorrect' });
-//            }
-
-//            const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
-//            res.setHeader('Authorization', `Bearer ${token}`);
-//            res.status(200).json({ token: token, expiresIn: 3600 });
-//   }
-//   catch (err) {
-//          return res.status(401).json({ message: 'Error with authentication' });
-//        }
-      
-// }
-
-
-
-
-
-//old
-
-
-
-// login: (req,res) => {
-
-//   let userFound;
-
-//   UserModel.findOne({username: req.body.username})
-//       .then(user => {
-//           if(!user)
-//           {
-//               return res.status(401).json({
-//                   message: 'User not found'
-//               })
-//           }
-
-//           userFound = user
-//           return bcrypt.compare(req.body.password, user.password)
-//       })
-
-//   .then(result => {
-//       if(!result)
-//       {
-//           return res.status(401).json({
-//               message: 'Password is incorrect'
-//           })
-//       }
-
-//       const token = jwt.sign({username: userFound.username, userId: userFound._id},secretString, {expiresIn:"1h"})
-//       res.setHeader('Authorization', `Bearer ${token}`);
-//       return res.status(200).json({
-//           token: token,
-//           expiresIn: 3600
-//       })
-//   })
-//   .catch(err => {
-//       return res.status(401).json({
-//           message: 'Error with authentication'
-//       })
-//   })
-// }
