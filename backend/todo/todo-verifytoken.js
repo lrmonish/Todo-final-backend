@@ -1,20 +1,28 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config(); 
+require('dotenv').config();
+const user = require('../auth/user-model');
+const secretString = process.env.SECRET_STRING;
 
-const secretString = process.env.SECRET_STRING; 
+async function verifyToken(req, res, next) {
+  
+  const token = req.headers.authorization;
 
-function verifyToken(req, res, next) {
-    try {
-      const token = req.headers.authorization;
-      jwt.verify(token, secretString, (err) => {
-        if (err) {
-          return res.status(401).json({ message: 'Unauthorized' });
-        }
-        next;
-      });
-    } catch (err) {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
+  if (!token) {
+    return res.status(500).json({message:"no token"});
   }
 
-  module.exports= verifyToken;
+      const decoded =await jwt.verify(token, secretString);
+      const User =await user.findOne({ username: decoded.username })
+
+      if(decoded.username === User.username )
+      {
+        return { val:true};
+      }
+     else{
+      res.status(500)
+      return {val:false, message:"auth is declined"}
+     }
+}
+
+
+module.exports = verifyToken;
