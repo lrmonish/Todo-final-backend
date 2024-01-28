@@ -15,7 +15,7 @@ mongoose.connect("mongodb://localhost:27017")
     .catch(() => {
         console.log('Error connecting to MongoDB');
     })
-
+    
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.json());
@@ -25,6 +25,8 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     next();
 })
+
 app.use(todoroute);
 app.use(authroute);
+
 module.exports = app;
