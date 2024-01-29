@@ -1,10 +1,6 @@
 const Todo = require('./todo-schema');
-// const verifyToken = require('./todo-verifytoken'); 
-const jwt = require('jsonwebtoken');
 const verifyToken = require('./todo-verifytoken');
 require('dotenv').config();
-const secretString = process.env.SECRET_STRING;
-
 
 const TodosController = {
 
@@ -14,7 +10,11 @@ const TodosController = {
          
           if(temp.val)
           {
-            const newTodo =  new Todo(req.body);
+            const newTodo = new Todo({
+              ...req.body,  
+            owner:req.user._id,
+            ownerName:req.user.username
+            })
             const savedTodo = await newTodo.save();
             
             return res.status(201).json(savedTodo);

@@ -1,11 +1,31 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt');
+const Todo = require('../todo/todo-schema');
 
 const userSchema = mongoose.Schema({
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true}
+},
+{
+  timestamps:true
 });
+
+
+// userSchema.virtual('tasks',{
+//   ref:"Todo",
+//   localField:'_id',
+//   foreignField:'owner'
+// })
+
+
+
+userSchema.methods.getPublicProfile = function () {
+  const user = this
+  const userObject = user.toObject();
+  delete userObject.password;
+  return userObject;
+}
 
 userSchema.pre('save', async function (next) {
     if (this.isModified('password')) {

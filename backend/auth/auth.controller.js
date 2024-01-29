@@ -18,7 +18,8 @@ const AuthController = {
           const savedUser = await userModel.save();
           res.status(201).json({
             message: 'User created',
-            result: savedUser,
+            // result: savedUser,
+            result: userModel.getPublicProfile()
           });
         } catch (err) {
           if (err.name === 'ValidationError') {
@@ -54,7 +55,7 @@ login: async (req,res) => {
            const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
            
            res.setHeader('Authorization', `Bearer ${token}`);
-           res.status(200).json({ token: token, expiresIn: 3600 });
+           res.status(201).json({ token: token, expiresIn: 3600 });
   }
   catch (err) {
          return res.status(401).json({ message: 'Error with authentication' });
