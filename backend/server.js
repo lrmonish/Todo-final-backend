@@ -1,8 +1,10 @@
 const http = require('http');
 const express = require('./app');
 const server = http.createServer(express)
-const port = 3000;
-server.listen(port,()=>{console.log(`In port: ${port}`);});
+require('dotenv').config();
+
+
+server.listen(process.env.PORT_SERVER,()=>{console.log(`In port: ${process.env.PORT_SERVER}`);});
 
 const Todo = require('./todo/todo-schema');
 const User = require('./auth/user-model');
@@ -18,9 +20,13 @@ const main = async()=>{
     //   });
 
 
-    // const user = await User.findById('65b777c111b83ebaddf7fe03');
-    // console.log(user.tasks);
+    // const user = await User.tasks;
+    // // await user.populate('tasks').then(populatedUser => {
+    // //     console.log(populatedUser);
+    // //   });
+    // console.log(User);
    
 }
 
+  
 // main();

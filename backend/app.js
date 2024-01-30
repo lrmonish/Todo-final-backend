@@ -5,10 +5,14 @@ const cors = require("cors");
 const authroute = require('./routes/authroutes');
 const todoroute = require('./routes/todoroutes');
 
+
+
+require('dotenv').config();
+
 const app = express();
 exports.app = app;
 
-mongoose.connect("mongodb://localhost:27017")    
+mongoose.connect(process.env.URI)    
     .then(() => {
         console.log('Connected to MongoDB')
     })

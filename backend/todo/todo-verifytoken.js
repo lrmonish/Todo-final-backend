@@ -5,7 +5,8 @@ const secretString = process.env.SECRET_STRING;
 
 async function verifyToken(req, res, next) {
   
-  const token = req.headers.authorization;
+   const token = req.headers.authorization;
+  
   if (!token) {
     return res.status(500).json({message:"no token"});
   }

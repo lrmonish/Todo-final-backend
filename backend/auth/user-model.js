@@ -5,18 +5,22 @@ const Todo = require('../todo/todo-schema');
 
 const userSchema = mongoose.Schema({
     username: {type: String, required: true, unique: true},
-    password: {type: String, required: true}
+    password: {type: String, required: true},
+    avatar:{
+      type:Buffer,
+      contentType: String,
+    }
 },
 {
   timestamps:true
 });
 
 
-// userSchema.virtual('tasks',{
-//   ref:"Todo",
-//   localField:'_id',
-//   foreignField:'owner'
-// })
+
+  // ref:"Todo",
+  // localField:'_id',
+  // foreignField:'owner'
+
 
 
 
