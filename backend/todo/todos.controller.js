@@ -30,12 +30,16 @@ const TodosController = {
          
     if(temp.val)
     {
-         
-          const todos = await Todo.find();
+      const userId = req.user._id;
+          const todos = await Todo.find({owner:userId});
           res.json(todos);
         return res.status(201)
        
     } 
+    else
+    {
+      return res.status(500)
+    }
 
   },
   
@@ -74,6 +78,24 @@ const TodosController = {
     } 
 
   },
+
+  updateCompleted: async(req, res) =>
+  {
+
+const temp= await verifyToken(req, res);
+         
+    if(temp.val)
+    {
+           const id = req.params.id;
+           const updatedDescription = !req.body.completed
+
+           await Todo.findByIdAndUpdate(id, { completed: updatedDescription }, { new: true });
+        
+          res.json("Todo description updated successfully");
+       
+    } 
+
+  },
   
   deletePost:  async (req, res) => {
     
@@ -87,44 +109,44 @@ const TodosController = {
           res.json({ message: "Todo deleted successfully" });
     }
 
-  },
-
-  postImage: async (req, res) => {
-    try {
-       await verifyToken(req, res);
-  
-    //   const { filename, mimetype } = req.file; 
-    //  console.log(req.file.buffer);
-      
-      await userModel.findByIdAndUpdate(req.user._id, {
-        avatar: req.file.buffer,
-        // contentType: mimetype, 
-        // filename, 
-      }, { new: true }); 
-  
-      const updatedUser = req.user; 
-  
-      res.send(updatedUser); 
-    } catch (error) {
-      console.error(error);
-      res.status(400).send({ message: "Error in uploading" });
-    }
-  },
-
-  deleteImage: async (req, res) => {
-    try {
-       await verifyToken(req, res);
-  
-      req.user.avatar=undefined;
-     await req.user.save();
-      const updatedUser = req.user.save(); 
-  
-      res.send(updatedUser); 
-    } catch (error) {
-      console.error(error);
-      res.status(400).send({ message: "Error in uploading" });
-    }
   }
+
+  // postImage: async (req, res) => {
+  //   try {
+  //      await verifyToken(req, res);
+  
+  //   //   const { filename, mimetype } = req.file; 
+  //   //  console.log(req.file.buffer);
+      
+  //     await userModel.findByIdAndUpdate(req.user._id, {
+  //       avatar: req.file.buffer,
+  //       // contentType: mimetype, 
+  //       // filename, 
+  //     }, { new: true }); 
+  
+  //     const updatedUser = req.user; 
+  
+  //     res.send(updatedUser); 
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(400).send({ message: "Error in uploading" });
+  //   }
+  // },
+
+  // deleteImage: async (req, res) => {
+  //   try {
+  //      await verifyToken(req, res);
+  
+  //     req.user.avatar=undefined;
+  //    await req.user.save();
+  //     const updatedUser = req.user.save(); 
+  
+  //     res.send(updatedUser); 
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(400).send({ message: "Error in uploading" });
+  //   }
+  // }
 };
 
 module.exports = TodosController;
