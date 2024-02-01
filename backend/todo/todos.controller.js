@@ -110,43 +110,6 @@ const temp= await verifyToken(req, res);
     }
 
   }
-
-  // postImage: async (req, res) => {
-  //   try {
-  //      await verifyToken(req, res);
-  
-  //   //   const { filename, mimetype } = req.file; 
-  //   //  console.log(req.file.buffer);
-      
-  //     await userModel.findByIdAndUpdate(req.user._id, {
-  //       avatar: req.file.buffer,
-  //       // contentType: mimetype, 
-  //       // filename, 
-  //     }, { new: true }); 
-  
-  //     const updatedUser = req.user; 
-  
-  //     res.send(updatedUser); 
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(400).send({ message: "Error in uploading" });
-  //   }
-  // },
-
-  // deleteImage: async (req, res) => {
-  //   try {
-  //      await verifyToken(req, res);
-  
-  //     req.user.avatar=undefined;
-  //    await req.user.save();
-  //     const updatedUser = req.user.save(); 
-  
-  //     res.send(updatedUser); 
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(400).send({ message: "Error in uploading" });
-  //   }
-  // }
 };
 
 module.exports = TodosController;

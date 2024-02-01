@@ -16,14 +16,6 @@ const userSchema = mongoose.Schema({
 });
 
 
-
-  // ref:"Todo",
-  // localField:'_id',
-  // foreignField:'owner'
-
-
-
-
 userSchema.methods.getPublicProfile = function () {
   const user = this
   const userObject = user.toObject();
