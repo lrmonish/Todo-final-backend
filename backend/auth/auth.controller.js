@@ -47,7 +47,7 @@ login: async (req,res) => {
            }
             
            const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
-
+           
            if(!isPasswordValid)
            {
             
@@ -56,8 +56,12 @@ login: async (req,res) => {
            }
 
            const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
+          let username =  req.body.username
+
+           res.setHeader('Authorization', `Bearer ${token}`, 'username', `username ${username}`);
+           res.setHeader( 'username', `${username}`);
            
-           res.setHeader('Authorization', `Bearer ${token}`);
+
            res.status(201).json({ token: token, expiresIn: 3600 });
   }
   catch (err) {

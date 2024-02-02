@@ -33,5 +33,5 @@ app.use((req, res, next) => {
 
 app.use(todoroute);
 app.use(authroute);
-
+app.use(express.static("todoapp"))
 module.exports = app;
