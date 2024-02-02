@@ -4,7 +4,6 @@ const user = require('../auth/user-model');
 const secretString = process.env.SECRET_STRING;
 
 async function verifyToken(req, res, next) {
-  
    const token = req.headers.authorization;
   
   if (!token) {
@@ -30,6 +29,7 @@ async function verifyToken(req, res, next) {
   catch{
     return res.status(500).json({message:"something wrong"});
   }
+  
 }
 
 

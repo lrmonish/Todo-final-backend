@@ -5,12 +5,13 @@ const TodosController = require('../todo/todos.controller');
 
 
 
-router.post("/api/todos/CreatePost",TodosController.createPost);
-router.get("/api/todos/GetPost", TodosController.getPost);
-router.get("/api/todos/GetPost/:id", TodosController.getByidPost);
-router.put("/api/todos/EditPost/:id", TodosController.putPost);
-router.put("/api/todos/updateComplete/:id", TodosController.updateCompleted);
-router.delete("/api/todos/DeletePost/:id", TodosController.deletePost);
+router.post("/CreatePost",TodosController.createPost);
+router.get("/GetPostCompleted", TodosController.GetPostCompleted);
+router.get("/GetPost", TodosController.getPost);
+router.get("/GetPost/:id", TodosController.getByidPost);
+router.put("/EditPost/:id", TodosController.putPost);
+router.put("/updateComplete/:id", TodosController.updateCompleted);
+router.delete("/DeletePost/:id", TodosController.deletePost);
 
 
 

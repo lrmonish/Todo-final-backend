@@ -1,5 +1,6 @@
 const UserModel = require('./user-model');
 const bcrypt = require('bcrypt');
+const bodyparser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const Todo = require('../todo/todo-schema');
 const verifyToken = require('../todo/todo-verifytoken');
@@ -7,7 +8,7 @@ const userModel = require('./user-model');
 require('dotenv').config(); 
 
 const secretString = process.env.SECRET_STRING; 
-password = "";
+
 const AuthController = {
 
 
@@ -46,7 +47,6 @@ login: async (req,res) => {
            }
             
            const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
-           password=user.password;
 
            if(!isPasswordValid)
            {
@@ -70,17 +70,17 @@ deleteUser: async (req, res)=>
 {
   try
   {
-    const temp= await verifyToken(req, res);
-       
+    const temp= await verifyToken(req, res); 
     if(temp.val)
+
     {
+      
        const user = await  req.user._id;  
        let pass = req.params.id;
       pass = pass.toString()
         
-       const storedPassword = password;
+       const storedPassword = req.user.password;
        
-         
        if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
@@ -91,7 +91,9 @@ deleteUser: async (req, res)=>
       
         await Todo.deleteMany({ owner:user});
         await userModel.findByIdAndDelete(user)
+        
         res.json({ message: 'User deleted successfully' });
+        
         
       } else {
         res.status(401).json({ error: 'Invalid password' });

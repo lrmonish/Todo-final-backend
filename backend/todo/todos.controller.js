@@ -1,7 +1,7 @@
 const Todo = require('./todo-schema');
 const verifyToken = require('./todo-verifytoken');
 require('dotenv').config();
-const userModel = require('../auth/user-model');
+
 
 const TodosController = {
 
@@ -108,6 +108,27 @@ const temp= await verifyToken(req, res);
           if (!deletedTodo) return res.status(404).json({ message: "Todo not found" });
           res.json({ message: "Todo deleted successfully" });
     }
+
+  },
+
+  GetPostCompleted: async(req, res)=>
+  { 
+    try
+    {
+    
+    const todos = await Todo.find({completed:"true"});
+    res.json(todos);
+    
+       return res.status(201)
+
+  }
+    
+  catch
+    {
+      return res.status(500)
+    }
+ 
+
 
   }
 };

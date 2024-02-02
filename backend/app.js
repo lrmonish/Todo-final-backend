@@ -19,10 +19,11 @@ mongoose.connect(process.env.URI)
     .catch(() => {
         console.log('Error connecting to MongoDB');
     })
-    
+
+app.use(express.json());
+app.use(bodyParser.json()); 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.json());
+
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
