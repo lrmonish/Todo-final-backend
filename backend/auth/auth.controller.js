@@ -1,6 +1,5 @@
 const UserModel = require('./user-model');
 const bcrypt = require('bcrypt');
-const bodyparser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const Todo = require('../todo/todo-schema');
 const verifyToken = require('../todo/todo-verifytoken');
@@ -10,10 +9,10 @@ require('dotenv').config();
 const secretString = process.env.SECRET_STRING; 
 let role;
 const adminkey = process.env.adminkey;
-
+let updatedDescription;
+let id; 
 
 const AuthController = {
-
 
   signup: async (req, res) => {
 
@@ -73,7 +72,7 @@ login: async (req,res) => {
              
            }
  
-           const token = jwt.sign({ username: user.username, userId: user._id }, secretString, { expiresIn: '1h' });
+           const token = jwt.sign({ username: user.username, userId: user._id, role:user.role }, secretString, { expiresIn: '1h' });
           let username =  req.body.username
            res.setHeader('Authorization', `Bearer ${token}`, 'username', `username ${username}`);
            res.setHeader( 'username', `${username}`);
@@ -152,7 +151,11 @@ deleteuserbyadmin : async(req, res)=>
 {
   try
   {
+   
     const deletedTodo = await userModel.findByIdAndDelete(req.params.id);
+    await Todo.deleteMany({ owner:req.params.id});
+    
+
     if (!deletedTodo) return res.status(404).json({ message: "user not found" });
     return res.json({ message: "user deleted successfully" });
   
@@ -165,24 +168,50 @@ deleteuserbyadmin : async(req, res)=>
 
 },
 
-edituserbyadmin : async(req, res)=>
-{
+edituserbyadmin: async (req, res) => {
+  
+  
+  const temp= await verifyToken(req, res); 
+  if(temp.val)
+
+  {
+    try {
+    
+      updatedDescription = req.body.username;
+      id = req.params.id;
+     
+      await userModel.findByIdAndUpdate(id, { username: updatedDescription }, { new: true });
+      
+      res.json("user updated successfully");
+  } catch {
+      return res.status(500).json({ error: 'Failed to update user' });
+  }
+}
+},
+
+editAll: async(req, res)=>
+{ 
   try
   {
-    const updatedDescription = req.body.username; 
-          const id = req.params.id;
-           console.log(updatedDescription);
-          await userModel.findByIdAndUpdate(id, { username: updatedDescription}, { new: true });
-        
-          res.json("user updated successfully");
+    
+    const temp= await verifyToken(req, res); 
+    if(temp.val)
 
-  }catch
-  {
+    {
+    let userId = await req.body.userId;
+    await Todo.updateMany(
+      { owner: userId }, 
+      { $set: { ownerName: updatedDescription } } 
+  );
+  return res.status(200).json({ error: ' updated user' }); 
+    }
+}
+catch
+{
+  return res.status(500).json({ error: 'Failed to update user' });
 
-    return res.status(500).json({ error: 'Failed to update user' });
-  }
-
-
+}
+  
 }
 }
 
