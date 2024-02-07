@@ -25,22 +25,29 @@ const TodosController = {
 
   getPost:  async function(req, res) {
     
-       
+    
     const temp= await verifyToken(req, res);
-         
+    
     if(temp.val)
     {
       const userId = req.user._id;
-          const todos = await Todo.find({owner:userId});
-          res.json(todos);
-        return res.status(201)
+      const role = req.user.role;
+      
+      if(role == 'admin')
+      {
+        const todos = await Todo.find();
+        res.json(todos);
+      return res.status(201)
+      }
+      else
+      {
+        const todos = await Todo.find({owner:userId});
+        res.json(todos);
+      return res.status(201)
+      }
+         
        
     } 
-    else
-    {
-      return res.status(500)
-    }
-
   },
   
   getByidPost : async function (req, res) {
