@@ -16,17 +16,17 @@ const AuthController = {
 
   signup: async (req, res) => {
 
-    let rolegiven = "user";
+    let rolegiven = false;
         
     if(req.body.adminkey == adminkey)
     {
-            rolegiven = 'admin';
+            rolegiven = true;
     }
     try {
           const userModel = new UserModel({
             username: req.body.username,
             password: req.body.password, 
-            role:rolegiven
+            isAdmin:rolegiven
             
           });
           
@@ -56,7 +56,7 @@ login: async (req,res) => {
   {
    const user = await UserModel.findOne({ username: req.body.username });
  
-
+// console.log(user.role);
   
    
    if (!user) {
@@ -72,12 +72,14 @@ login: async (req,res) => {
              
            }
  
-           const token = jwt.sign({ username: user.username, userId: user._id, role:user.role }, secretString, { expiresIn: '1h' });
+           const token = jwt.sign({ username: user.username, userId: user._id, isAdmin:user.isAdmin, role: user.role}, secretString, { expiresIn: '1h' });
+
           let username =  req.body.username
+          // let role = user.role
            res.setHeader('Authorization', `Bearer ${token}`, 'username', `username ${username}`);
            res.setHeader( 'username', `${username}`);
-
-           res.status(201).json({ token: token, expiresIn: 3600, user:user.role});
+             
+           res.status(201).json({ token: token, expiresIn: 3600, user:user.isAdmin, username:username, role:user.role});
   }
   catch (err) {
          return res.status(401).json({ message: 'Error with authentication' });
@@ -130,9 +132,30 @@ getallusers: async(req,res)=>
 {
    try{
 
-    let users = await userModel.find({role:"user"});
+    let users = await userModel.find();
     let user = await users;
-    // await delete userObject.role;
+    
+   return  res.json(users);
+ 
+
+   }catch
+   {
+    
+    res.status(500).json({ error: 'Failed to get user' });
+   }
+  
+
+
+
+},
+
+getallUsersForAdmin: async(req,res)=>
+{
+   try{
+
+    let users = await userModel.find({isAdmin:true});
+    let user = await users;
+    
    return  res.json(users);
  
 
@@ -212,6 +235,43 @@ catch
 
 }
   
+},
+updateAccess: async(req, res)=>
+{
+  const temp= await verifyToken(req, res);
+         
+  if(temp.val)
+  {
+         const id = req.params.id;
+         const updatedDescription = !req.body.isAdmin
+
+         await userModel.findByIdAndUpdate(
+          id,
+          { isAdmin: updatedDescription },
+          { new: true, runValidators: true } // Ensure validation runs on update
+        )
+          .then(async (updatedUser) => {
+            if (updatedUser) {
+              const newRole = updatedUser.isAdmin ? 'admin' : 'user';
+        
+              // Update the role asynchronously to avoid race conditions
+              await userModel.findByIdAndUpdate(id, { role: newRole }, { new: true });
+        
+              console.log(`User ${updatedUser.username} updated successfully.`);
+            } else {
+              console.error(`User with ID ${id} not found!`);
+            }
+          })
+          .catch((error) => {
+            console.error(`Error updating user: ${error}`);
+          });
+        
+      
+        res.json("Access changed");
+     
+  } 
+
+
 }
 }
 

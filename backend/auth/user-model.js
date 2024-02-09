@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt');
-const Todo = require('../todo/todo-schema');
+
 
 const userSchema = mongoose.Schema({
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    role:{type:String, default:"user"}
+    isAdmin:{type:Boolean, default:false},
+    role: { type: String, default: 'user' }
 },
 {
   timestamps:true
@@ -28,12 +29,17 @@ userSchema.methods.getPublicUsers = function () {
 }
 
 userSchema.pre('save', async function (next) {
-    if (this.isModified('password')) {
-      this.password = await bcrypt.hash(this.password, 8);
-    }
-    next();
-  });
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 8);
+  }
 
+  // Assign the "role" based on "isAdmin" before saving
+  this.role = this.isAdmin ? 'admin' : 'user';
+
+  next();
+});
+  
+ 
 
 userSchema.plugin(uniqueValidator);
 

@@ -93,6 +93,7 @@ const temp= await verifyToken(req, res);
          
     if(temp.val)
     {
+      
            const id = req.params.id;
            const updatedDescription = !req.body.completed
 
@@ -110,7 +111,7 @@ const temp= await verifyToken(req, res);
          
     if(temp.val)
     {
-        
+        console.log(req.user);
           const deletedTodo = await Todo.findByIdAndDelete(req.params.id);
           if (!deletedTodo) return res.status(404).json({ message: "Todo not found" });
           res.json({ message: "Todo deleted successfully" });

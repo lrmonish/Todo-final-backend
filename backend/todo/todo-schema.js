@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const userModel = require('../auth/user-model');
+
 
 const todoSchema = mongoose.Schema({
     description: String,
