@@ -56,7 +56,7 @@ login: async (req,res) => {
   {
    const user = await UserModel.findOne({ username: req.body.username });
  
-// console.log(user.role);
+
   
    
    if (!user) {
@@ -75,7 +75,7 @@ login: async (req,res) => {
            const token = jwt.sign({ username: user.username, userId: user._id, isAdmin:user.isAdmin, role: user.role}, secretString, { expiresIn: '1h' });
 
           let username =  req.body.username
-          // let role = user.role
+
            res.setHeader('Authorization', `Bearer ${token}`, 'username', `username ${username}`);
            res.setHeader( 'username', `${username}`);
              
@@ -248,16 +248,12 @@ updateAccess: async(req, res)=>
          await userModel.findByIdAndUpdate(
           id,
           { isAdmin: updatedDescription },
-          { new: true, runValidators: true } // Ensure validation runs on update
+          { new: true, runValidators: true } 
         )
           .then(async (updatedUser) => {
             if (updatedUser) {
               const newRole = updatedUser.isAdmin ? 'admin' : 'user';
-        
-              // Update the role asynchronously to avoid race conditions
               await userModel.findByIdAndUpdate(id, { role: newRole }, { new: true });
-        
-              console.log(`User ${updatedUser.username} updated successfully.`);
             } else {
               console.error(`User with ID ${id} not found!`);
             }
