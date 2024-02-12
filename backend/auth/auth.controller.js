@@ -21,6 +21,7 @@ const AuthController = {
     if(req.body.adminkey == adminkey)
     {
             rolegiven = true;
+            
     }
     try {
           const userModel = new UserModel({

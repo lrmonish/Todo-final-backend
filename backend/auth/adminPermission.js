@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 
-const userPermissionSchema = mongoose.Schema({
+const adminPermissionSchema = mongoose.Schema({
     name:
     {
         type: String,
-        default: "USER"
+        default: "ADMIN"
     },
-    update:{
+     update:{
         type: Boolean,
         default: false
     },
@@ -29,6 +29,6 @@ const userPermissionSchema = mongoose.Schema({
     timestamps:true
 });
 
-module.exports = mongoose.model("userPermission", userPermissionSchema);
+module.exports = mongoose.model("adminPermission", adminPermissionSchema);
 
 

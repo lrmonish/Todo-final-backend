@@ -1,14 +1,14 @@
-const userPermissions = require('./userpermission');
-// const verifyToken = require('../todo/todo-verifytoken');
+const adminPermissions = require('./adminPermission');
+
 require('dotenv').config(); 
 
 
 
-const userPermissioncontroller = 
+const adminPermissioncontroller = 
 {
     postUser:async (req, res) => {
         try {
-          const newPermission = new userPermissions(req.body);
+          const newPermission = new adminPermissions(req.body);
           await newPermission.save();
           res.json({ message: 'Permission created successfully', data: newPermission });
         } catch (err) {
@@ -19,7 +19,7 @@ const userPermissioncontroller =
     getP: async(req, res)=>
 
     {
-      const p = await userPermissions.find({name:"USER"});
+      const p = await adminPermissions.find({name:"ADMIN"});
       res.json(p);
     return res.status(201)
     
@@ -29,10 +29,10 @@ const userPermissioncontroller =
   {
  try
  {
-  let name = { name: 'USER' };
+  let name = { name: 'ADMIN' };
   let boolval = req.body.boolval;
     
-  await userPermissions.findOneAndUpdate(
+  await adminPermissions.findOneAndUpdate(
     name,
     { create : boolval },
     { new: true },
@@ -52,10 +52,10 @@ const userPermissioncontroller =
   {
  try
  {
-  let name = { name: 'USER' };
+  let name = { name: 'ADMIN' };
   let boolval = req.body.boolval;
     
-  await userPermissions.findOneAndUpdate(
+  await adminPermissions.findOneAndUpdate(
     name,
     { update : boolval },
     { new: true },
@@ -75,10 +75,10 @@ deleteP: async(req, res)=>
 {
 try
 {
-let name = { name: 'USER' };
+let name = { name: 'ADMIN' };
 let boolval = req.body.boolval;
   
-await userPermissions.findOneAndUpdate(
+await adminPermissions.findOneAndUpdate(
   name,
   { delete : boolval },
   { new: true },
@@ -98,10 +98,10 @@ completedP :async(req, res)=>
 {
 try
 {
-let name = { name: 'USER' };
+let name = { name: 'ADMIN' };
 let boolval = req.body.boolval;
   
-await userPermissions.findOneAndUpdate(
+await adminPermissions.findOneAndUpdate(
   name,
   { completed : boolval },
   { new: true },
@@ -119,4 +119,4 @@ return res.json({ message: 'error completed updated' });
 
 }
 
-module.exports= userPermissioncontroller;
+module.exports= adminPermissioncontroller;
