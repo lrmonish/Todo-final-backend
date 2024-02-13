@@ -1,4 +1,4 @@
-const Todo = require('./todo-schema');
+const Todo = require('../models/todo-schema');
 const verifyToken = require('./todo-verifytoken');
 require('dotenv').config();
 
@@ -33,7 +33,7 @@ const TodosController = {
       const userId = req.user._id;
       const role = req.user.role;
       
-      if(role == 'admin')
+      if(role === 'admin' || role === 'superadmin')
       {
         const todos = await Todo.find();
         res.json(todos);

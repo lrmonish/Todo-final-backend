@@ -1,16 +1,40 @@
-const UserModel = require('./user-model');
+const UserModel = require('../models/user-model');
+
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Todo = require('../todo/todo-schema');
+const Todo = require('../models/todo-schema');
 const verifyToken = require('../todo/todo-verifytoken');
-const userModel = require('./user-model');
+const userModel = require('../models/user-model');
 require('dotenv').config(); 
+const axios = require('axios');
 
 const secretString = process.env.SECRET_STRING; 
-let role;
 const adminkey = process.env.adminkey;
 let updatedDescription;
 let id; 
+
+const adminP = {
+  name: "ADMIN",
+  update: true,
+  create: false,
+  delete: false,
+  completed: false,
+};
+const admindata = JSON.stringify(adminP);
+
+const userP = {
+  name: "ADMIN",
+  update: true,
+  create: false,
+  delete: false,
+  completed: false,
+};
+const userdata = JSON.stringify(userP);
+
+
+
+
 
 const AuthController = {
 
@@ -22,7 +46,15 @@ const AuthController = {
     {
             rolegiven = true;
             
+      try {
+        await axios.post('http://localhost:3000/admin-permissions',admindata);
+        await axios.post('http://localhost:3000/user-permissions',userdata);
+      } catch (error) {
+        console.error(error);
+      }
+             
     }
+
     try {
           const userModel = new UserModel({
             username: req.body.username,

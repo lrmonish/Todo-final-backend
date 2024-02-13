@@ -33,8 +33,18 @@ userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, 8);
   }
 
-  // Assign the "role" based on "isAdmin" before saving
-  this.role = this.isAdmin ? 'admin' : 'user';
+  if(this.username === 'admin')
+  {
+    this.role = 'superadmin';
+  }
+
+  else
+  {
+    
+    this.role = this.isAdmin ? 'admin' : 'user';
+
+  }
+ 
 
   next();
 });

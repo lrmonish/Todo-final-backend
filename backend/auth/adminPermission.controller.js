@@ -1,5 +1,5 @@
-const adminPermissions = require('./adminPermission');
-
+const adminPermissions = require('../models/adminPermission');
+const verifyToken = require('../todo/todo-verifytoken');
 require('dotenv').config(); 
 
 
@@ -16,17 +16,30 @@ const adminPermissioncontroller =
         }
       },
 
+
+
     getP: async(req, res)=>
 
     {
+        const temp= await verifyToken(req, res);
+      
+      if(temp.val)
+      {
       const p = await adminPermissions.find({name:"ADMIN"});
       res.json(p);
     return res.status(201)
-    
+      }
     },
+
+
+
 
   createP: async(req, res)=>
   {
+    const temp= await verifyToken(req, res);
+    
+    if(temp.val)
+    {
  try
  {
   let name = { name: 'ADMIN' };
@@ -44,12 +57,20 @@ const adminPermissioncontroller =
  {
   return res.json({ message: 'error create updated' });
  }
-    
+}
 
   },
 
+
+
+
+
   updateP:async(req, res)=>
   {
+    const temp= await verifyToken(req, res);
+    
+    if(temp.val)
+    {
  try
  {
   let name = { name: 'ADMIN' };
@@ -67,12 +88,19 @@ const adminPermissioncontroller =
  {
   return res.json({ message: 'error update updated' });
  }
-    
+}
 
   },
 
+
+
+
 deleteP: async(req, res)=>
 {
+  const temp= await verifyToken(req, res);
+    
+  if(temp.val)
+  {
 try
 {
 let name = { name: 'ADMIN' };
@@ -91,11 +119,19 @@ return res.json({ message: ' delete successfully' });
 return res.json({ message: 'error delete updated' });
 }
   
-
+  }
 },
+
+
+
+
 
 completedP :async(req, res)=>
 {
+  const temp= await verifyToken(req, res);
+    
+  if(temp.val)
+  {
 try
 {
 let name = { name: 'ADMIN' };
@@ -113,9 +149,13 @@ return res.json({ message: 'completed successfully' });
 {
 return res.json({ message: 'error completed updated' });
 }
-  
+}
 
 }
+
+
+
+
 
 }
 
