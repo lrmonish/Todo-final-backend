@@ -11,6 +11,8 @@ const axios = require('axios');
 
 const secretString = process.env.SECRET_STRING; 
 const adminkey = process.env.adminkey;
+const userPermission = process.env.userP;
+const AdminPermission = process.env.adminP;
 let updatedDescription;
 let id; 
 
@@ -47,8 +49,8 @@ const AuthController = {
             rolegiven = true;
             
       try {
-        await axios.post('http://localhost:3000/admin-permissions',admindata);
-        await axios.post('http://localhost:3000/user-permissions',userdata);
+        await axios.post(AdminPermission,admindata);
+        await axios.post(userPermission,userdata);
       } catch (error) {
         console.error(error);
       }
